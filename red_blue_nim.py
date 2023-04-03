@@ -75,10 +75,14 @@ def red_blue_nim(num_red, num_blue, first_player='computer', depth=4):
     while True:
         print(f"Red: {board[0]}, Blue: {board[1]}")
         if current_player == 'computer':
-            move, _ = minmax_alpha_beta(
-                depth, board, True, -sys.maxsize, sys.maxsize)
-            print(f"Computer removes {move[1]} from {move[0]}")
-            board = make_move(board, move)
+            _, move = minmax_alpha_beta(
+                depth, board, True, float('-inf'), float('inf'))
+            if move == 'red' and board[0] > 0:
+                board[0] -= 1
+                print(f"Computer removes 1 marble from {move} pile")
+            elif move == 'blue' and board[1] > 0:
+                board[1] -= 1
+                print(f"Computer removes 1 marble from {move} pile")
             if board[0] == 0 or board[1] == 0:
                 break
             current_player = 'human'
@@ -114,44 +118,18 @@ def red_blue_nim(num_red, num_blue, first_player='computer', depth=4):
             score = 2 * board[0]
             break
 
-        if current_player == 'computer':
-            print("Computer's turn...")
-            _, move = minmax_alpha_beta(
-                depth, board, True, float('-inf'), float('inf'))
-            if move == 'red' and board[0] > 0:
-                board[0] -= 1
-                print(f"Computer removes 1 marble from {move} pile")
-            else:
-                board[1] -= 1
-            print(f"Computer removes 1 marble from {move} pile")
-            current_player = 'human'
-        else:
-            print("Human's turn...")
-            pile = input("Select a pile to remove from (red/blue): ")
-            while pile != 'red' and pile != 'blue':
-                pile = input(
-                    "Invalid input. Select a pile to remove from (red/blue): ")
-            if pile == 'red':
-                board[0] -= 1
-            else:
-                board[1] -= 1
-            print(f"Human removes 1 marble from {pile} pile")
-            current_player = 'computer'
-
     # Print the final score
     print(f"\nFinal Score:\nRed={board[0]}, Blue={board[1]}")
     if score > 0:
-        print("Computer wins!")
-    elif score < 0:
-        print("Human wins!")
+        print(f"Computer wins with score {score}")
     else:
-        print("It's a tie!")
+        print("Game ends in a tie!")
 
 
 def main():
-    num_red = 5
+    num_red = 4
     num_blue = 4
-    first_player = 'human'
+    first_player = 'computer'
     depth = 4
 
     # num_red = int(sys.argv[1])
